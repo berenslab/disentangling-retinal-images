@@ -98,7 +98,7 @@ Therefore, if you want to train our model on a different dataset, start replacin
 structured dictionary in the `__getitem__` function.
 
 # Model weights
-The model weight of our trained generative models from the paper can be found here:
+The model weight of our trained generative models from the paper can be found on [zenodo](https://zenodo.org/records/13789223).
 
 
 # Credits
