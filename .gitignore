@@ -151,6 +151,5 @@ dmypy.json
 outputs/
 logfiles/
 lightning_logs/
-best_models/
 notebooks/
 images/
