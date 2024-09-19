@@ -1,5 +1,5 @@
 output_dir: ./outputs
-experiment_folder: fundus_gan_four_sub
+experiment_folder: testrun
 
 gpus: [0,1]
 max_epoch: 5
