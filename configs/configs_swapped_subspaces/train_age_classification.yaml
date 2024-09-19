@@ -1,0 +1,44 @@
+output_dir: ./outputs
+experiment_folder: train_age_classification
+
+gpus: [0,1]
+max_epoch: 10
+
+# Lightning trainer.
+val_check_percent: 1.0
+val_check_interval: 1
+monitor_metric: val_MulticlassAccuracy
+monitor_mode: max
+
+seed: 
+sanity_steps: 0
+resume: 
+
+weight_decay: 1.0e-06
+resnet_backbone: 18
+num_classes: 3
+
+# EyePACS dataset.
+data:
+  # Directories and paths to dataset images and metadata.
+  image_root_dir:
+  meta_factorized_path:
+  columns_mapping_path: 
+  splits_dir: 
+
+  image_size: 256  # trained and generated image size
+  batch_size: 12  # 14 for gpu nvidia titan xp
+  num_workers: 8 
+  prefetch_factor: 2 
+
+  input_preprocessing: True
+  conditional_labels:
+  classifier_labels: ["age_groups"]
+
+  filter_meta:
+    session_image_quality: [1, 2]  # excellent and good quality
+    eye_diseases_or: [0]  # only healthy fundus images (no eye diseases)
+
+  train_subset: 
+  val_subset: 
+  ram: False

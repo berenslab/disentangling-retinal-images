@@ -1,0 +1,75 @@
+output_dir: ./outputs
+experiment_folder: age_camera_w_dcor
+
+gpus: [0, 1, 2, 3]
+max_epoch: 200
+
+# Lightning trainer.
+val_check_percent: 1.0  # how much of validation dataset to check 
+val_check_interval: 2  # perform a validation loop every after every N training epochs
+monitor_metric: val_overall_loss  # which logged metric should be monitored for the best model weights
+monitor_mode: min  # monitor mode, either min or max
+
+seed: 
+sanity_steps: 0
+resume:
+
+# EyePACS dataset.
+data:
+  # Directories and paths to dataset images and metadata.
+  image_root_dir:
+  meta_factorized_path:
+  columns_mapping_path: 
+  splits_dir: 
+
+  image_size: 256 
+  batch_size: 14  # 14 for gpu v100
+  num_workers: 8 
+  prefetch_factor: 2 
+  
+  input_preprocessing: True
+  conditional_labels:
+  classifier_labels: ["age_groups", "camera"]
+
+  filter_meta:
+    session_image_quality: [1, 2]  # excellent and good quality
+    eye_diseases_or: [0]  # only healthy fundus images (no eye diseases)
+  
+  train_subset:
+  val_subset:
+  ram: False
+
+# Loss weighting terms.
+lambda_plp: 2  # generator: path length regularization
+lambda_enc_fake: 1  # first gan inversion loss, lambda_w
+lambda_enc_real: 2  # second gan inversion loss, lambda_p
+lambda_subspace_cs: 0.04  # subspace classifiers
+lambda_distance_correlation: 0.04  # distance correlation loss
+
+# Model paramters.
+generator: stylegan2  # generator architecture, if not "stylegan2", the generator will be stylegan1
+latent_dim: 32  # input latent (Z) dimensionality and intermediate latent (W) dimensionality
+num_mapping_layers: 8  # number of mapping network layers
+lr_g: 0.0025  # generator learning rate
+lr_d: 0.0025  # discriminator learning rate
+lazy_gradient_penalty_interval: 8  # interval for lazy gradient penalty with R1 regularization
+lazy_path_penalty_after: 0  # path length regularization
+lazy_path_penalty_interval: 2  # path length regularization
+
+cycle_consistency: True  # if true use second gan inversion loss, enc_real (L_p)
+seperate_mapping_networks: True  # if true have individual mapping networks for each subspace
+buffer_size: 4 # size of ring buffer for latent space samples and distance correlation computation
+
+# Subspace classification heads.
+classifier:
+  linear: True
+  subspace_dims: [4, 12]
+  hidden_layers:
+
+# Optional stylegan2-ada augmenation.
+ada_start_p: -1  # To disable augmentation set to -1
+ada_target: 0.6  
+ada_interval: 4
+ada_fixed: False
+
+num_vis_images: 64

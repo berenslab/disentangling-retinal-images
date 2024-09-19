@@ -1,0 +1,72 @@
+output_dir: ./outputs
+experiment_folder: plain_inv_gan
+
+gpus: [0, 1, 2, 3]
+max_epoch: 200
+
+val_check_percent: 1.0
+val_check_interval: 2
+monitor_metric: val_overall_loss
+monitor_mode: min
+
+seed: 
+sanity_steps: 0
+resume:
+
+# EyePACS dataset.
+data:
+  # Directories and paths to dataset images and metadata.
+  image_root_dir:
+  meta_factorized_path:
+  columns_mapping_path: 
+  splits_dir: 
+
+  image_size: 256 
+  batch_size: 14  # 14 for gpu v100
+  num_workers: 8 
+  prefetch_factor: 2 
+
+  input_preprocessing: True
+  conditional_labels:
+  classifier_labels:
+
+  filter_meta:
+    session_image_quality: [1, 2]  # excellent and good quality
+    eye_diseases_or: [0]  # only healthy fundus images (no eye diseases)
+  
+  train_subset: 
+  val_subset:  
+  ram: False
+
+classifier:
+  linear: 
+  subspace_dims: 
+  hidden_layers:
+
+cycle_consistency: True
+seperate_mapping_networks: False
+buffer_size: 
+
+# Loss weighting terms.
+lambda_plp: 2  # generator: path length regularization
+lambda_enc_fake: 1
+lambda_enc_real: 2  
+lambda_subspace_cs: 0.0
+lambda_distance_correlation: 0.0
+
+generator: stylegan2
+latent_dim: 32
+num_mapping_layers: 8
+lr_g: 0.0025
+lr_d: 0.0025
+lazy_gradient_penalty_interval: 8
+lazy_path_penalty_after: 0
+lazy_path_penalty_interval: 2
+
+ada_start_p: -1  # To disable augmentation set to -1
+ada_target: 0.6
+ada_interval: 4
+ada_fixed: False
+
+num_vis_images: 64
+batch_gpu: null  # Number of samples processed at a time by one GPU.

@@ -1,0 +1,26 @@
+gpus: [0]
+csv_name: test_age_groups
+
+# EyePACS dataset.
+data:
+  # Directories and paths to dataset images and metadata.
+  image_root_dir:
+  meta_factorized_path:
+  columns_mapping_path: 
+  splits_dir: 
+
+  image_size: 256  # trained and generated image size
+  batch_size_test: 50
+  num_workers: 8 
+  prefetch_factor: 2 
+
+  input_preprocessing: True
+  conditional_labels:
+  classifier_labels: ["age_groups"]
+
+  filter_meta:
+    session_image_quality: [1, 2]  # excellent and good quality
+    eye_diseases_or: [0]  # only healthy fundus images (no eye diseases)
+
+  test_subset: 
+  ram: False

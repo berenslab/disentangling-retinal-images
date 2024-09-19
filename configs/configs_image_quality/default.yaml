@@ -1,0 +1,15 @@
+tmp_image_folder: /tmp/
+
+gpu_device: 0
+
+data:
+  image_root_folder: 
+  split: train
+  batch_size: 50
+  num_workers: 8
+  prefetch_factor: 2
+  subset: 
+  ram: False
+
+batch_size_fid_kid: 50
+  

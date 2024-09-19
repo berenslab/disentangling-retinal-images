@@ -1,0 +1,9 @@
+gpus: [0]
+
+data:
+  batch_size: 125 
+  num_workers: 8 
+  prefetch_factor: 2 
+
+  subset: 
+  ram: False
