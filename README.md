@@ -3,7 +3,7 @@ This repository contains the code to reproduce the results from the paper
 [Disentangling representations of retinal images with generative models](https://arxiv.org/abs/2402.19186).
 
 We present a novel population model for retinal fundus images that effectively
-disentangles patient attributes from camera effects with a a disentanglement loss based
+disentangles patient attributes from camera effects with a disentanglement loss based
 on distance correlation. The resulting models enable controllable and highly realistic
 fundus image generation.
 
@@ -21,23 +21,55 @@ pip install --editable .
 This installs the code in `src` as an editable package and all the dependencies in
 [requirements.txt](requirements.txt).
 
+# Quick start: generate images
+Try our trained models right away, without access to the EyePACS dataset. The model
+weights are downloaded automatically from [zenodo](https://zenodo.org/records/13789223).
+Run from the repository root:
+```bash
+# list the available models
+python src/generate.py --list
+
+# generate images with one of the four runs (1-4) of a model
+python src/generate.py --model age_camera_w_dcor --runs 1
+```
+
+The results are saved to `results/<model>/model<run>/`:
+* `samples.png`: random samples.
+* `swap_<subspace>.png`: subspace swaps. Each image keeps the subspaces of its row's
+  base sample, except for the swapped subspace, which is taken from the column's donor
+  sample. Images in a column should share the donor's swapped attribute:
+  * `camera`: camera appearance (e.g. color, brightness, contrast), while the anatomy
+    stays with the row.
+  * `age_groups`: patient age; the changes are subtle, as age leaves few visible traces.
+  * `patient_ethnicity`: patient ethnicity (e.g. pigmentation); as ethnicity is highly
+    imbalanced in EyePACS, swaps of random samples often show little change.
+  * `style`: the remaining features, mostly the anatomy (e.g. vessels), while camera and
+    patient attributes stay with the row.
+
+Notes:
+* Compare the swaps of `*_w_dcor` and `*_wo_dcor` models to see the effect of the
+  distance correlation loss.
+* The swaps are qualitative illustrations with random latents; quantitative results are
+  reported in the paper.
+
 # Organization of the repo
 * [configs](./configs/): Configuration files for all experiments.
 * [scripts](./scripts/): Bash scripts for model training, testing and evaluation.
 * [src](./src/): Main source code to run the experiments.
     * [dataset](./src/dataset/): Pytorch EyePACS dataset.
     * [generative_model](./src/generative_model/): Pytorch lightning stylegan module.
-    * [evaluation](./src/eval/): Model evaluation with kNN classifiers, image quality
+    * [evaluation](./src/evaluation/): Model evaluation with kNN classifiers, image quality
     metrics (fid-score), and swapped subspace classification.
 * [train.py](./src/train.py): Model training script. 
 * [test.py](./src/test.py): Model testing script.
 * [predict.py](./src/predict.py): Image embedding prediction script (model inference).
+* [generate.py](./src/generate.py): Image generation with our model weights (no dataset needed).
 
 
 # EyePACS dataset
 The EyePACS dataset can be accessed upon request: https://www.eyepacs.com/. Our dataset parser can be checked out in [dataset/eyepacs_parsing](./src/dataset/eyepacs_parsing/eyepacs.py). 
 
-For our EyePACS pytorch dataset you will need a factorized metadata (with a categorical columns mapping) and a diretory to your dataset splits. Therefore, we also share our scripts to [factorize](./src/dataset/eyepacs_parsing/factorize_meta.py) and to [split](./src/dataset/eyepacs_parsing/split_data.py) the dataset. In [dataset/eyepacs_parsing](./src/dataset/eyepacs_parsing) we share our categorical columns mapping as a reference.
+For our EyePACS pytorch dataset you will need a factorized metadata (with a categorical columns mapping) and a directory to your dataset splits. Therefore, we also share our scripts to [factorize](./src/dataset/eyepacs_parsing/factorize_meta.py) and to [split](./src/dataset/eyepacs_parsing/split_data.py) the dataset. In [dataset/eyepacs_parsing](./src/dataset/eyepacs_parsing) we share our categorical columns mapping as a reference.
 
 Moreover, before factorizing and splitting the dataset, we pre-processed the retinal fundus images with: https://github.com/berenslab/fundus_circle_cropping.
 
@@ -97,10 +129,6 @@ Therefore, if you want to train our model on a different dataset, start replacin
 [EyePACS dataset](src/dataset/eyepacs.py) with your dataset and return an identically
 structured dictionary in the `__getitem__` function.
 
-# Model weights
-The model weight of our trained generative models from the paper can be found on [zenodo](https://zenodo.org/records/13789223).
-
-
 # Credits
 We used a stylegan2-ada pytorch lightning implementation as a starting point for our
 experiments: https://github.com/nihalsid/stylegan2-ada-lightning. From this repository
@@ -122,4 +150,4 @@ If you find our code or paper useful, please consider citing this work.
    doi = {https://doi.org/10.1016/j.media.2025.103628},
    url = {https://www.sciencedirect.com/science/article/pii/S1361841525001756},
 }
-``` 
+```

@@ -152,4 +152,5 @@ outputs/
 logfiles/
 lightning_logs/
 notebooks/
-images/
+results/
+checkpoints/
